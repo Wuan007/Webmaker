@@ -1,0 +1,13 @@
+body {
+  padding-top: 75px;
+  padding-bottom: 75px;
+}
+
+nav a, nav button i {
+  color: white;
+}
+
+label {
+  font-weight: 700;
+}
+
