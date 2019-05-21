@@ -1,69 +1,137 @@
 import React, { Component } from "react";
-
+import {Link} from "react-router-dom";
 export default class WidgetList extends Component {
+    state= {
+        uid: "",
+        wid: "",
+        pid: "",
+        widgets: []
+    }
+
+    async componentDidMount() {
+        await this.setState({
+            uid: this.props.match.params.uid,
+            wid: this.props.match.params.wid,
+            pid: this.props.match.params.pid
+        })
+        this.filterWidgets(this.state.pid);
+    }
+
+    filterWidgets = (pid) => {
+        const widgets = this.props.widgets.filter(
+            (widget) => (
+                widget.pageId === pid
+            )
+        )
+
+        this.setState({
+            widgets
+        })
+    }
+
     render() {
+        const {uid, wid, pid, widgets} = this.state
         return (
             <div>
+                <nav className="navbar navbar-light fixed-top bg-light">
+                    <Link className="color-black" to={`/user/${uid}/website/${wid}/page`}>
+                        <i className="fas fa-chevron-left" />
+                    </Link>
+                    <span className="navbar-brand">
+                        Widgets
+                    </span>
+                    <Link className="color-black" to={`/user/${uid}/website/${wid}/page/${pid}/widget/new`}>
+                        <i className="fas fa-plus" />
+                    </Link>
+                </nav>
+
                 <div className="container-fluid">
-                    <div>
-                        <WidgetButtonGroup type="HEADING" />
-                        <Heading text="Welcome" size="1" />
-                    </div>
-                    <div>
-                        <WidgetButtonGroup type="HEADING" />
-                        <Heading
-                            text="Lorem ipsum dolor sit amet, consectetur
-                      adipisicing elit. Similique saepe vel sit
-                      repellendus quis"
-                            size="3"
-                        />
-                    </div>
-                    <div>
-                        <WidgetButtonGroup type="IMAGE" />
-                        <Image
-                            src="https://www.gettyimages.ie/gi-resources/images/Homepage/Hero/UK/CMS_Creative_164657191_Kingfisher.jpg"
-                            alt="bird"
-                            width="50%"
-                        />
-                    </div>
-                    <div>
-                        <div className="absolute-right">
-                            <Link
-                                to={{
-                                    pathname:
-                                        "/user/:uid/website/:wid/page/:pid/widget/:wgid",
-                                    state: { type: "HEADING" }
-                                }}
-                            >
-                                <i className="fas fa-cog" />
-                            </Link>
-                            <Link to="#">
-                                <i className="fas fa-bars" />
-                            </Link>
-                        </div>
-                        <Heading text="vel sit repellendus quis" size="3" />
-                    </div>
-                    <div>
-                        <WidgetButtonGroup type="YOUTUBE" />
-                        <Youtube
-                            src="https://www.youtube.com/embed/SqrbIlUwR0U"
-                            title="Golang"
-                            width="20%"
-                        />
-                    </div>
-                    <div>
-                        <WidgetButtonGroup type="HEADING" />
-                        <Heading
-                            text="Lorem ipsum dolor sit amet consectetur
-                      adipisicing elit. Officiis nostrum maiores
-                      blanditiis iste doloribus harum magni ullam
-                      repellat eaque? Et veniam accusantium illo
-                      nostrum dolores temporibus. Cum cupiditate alias
-                      eius."
-                            size="5"
-                        />
-                    </div>
+                    {
+                        widgets.map(
+                            (widget) => {
+                                switch(widget.widgetType){
+                                    case "HEADING":
+                                        return (
+                                            <div key={widget._id}>
+                                                <div className="absolute-right">
+                                                    <Link to={`/user/${uid}/website/${wid}/page/${pid}/widget/${widget._id}`}>
+                                                        <i className="fas fa-cog" />
+                                                    </Link>
+                                                    <span>
+                                                        <i className="fas fa-bars" />
+                                                    </span>
+                                                </div>
+                                                <div>
+                                                    {widget.size === 1 && <h1>{widget.text}</h1>}
+                                                    {widget.size === 2 && <h2>{widget.text}</h2>}
+                                                    {widget.size === 3 && <h3>{widget.text}</h3>}
+                                                    {widget.size === 4 && <h4>{widget.text}</h4>}
+                                                    {widget.size === 5 && <h5>{widget.text}</h5>}
+                                                    {widget.size === 6 && <h6>{widget.text}</h6>}
+                                                </div>
+                                            </div>
+                                        )
+                                    case "IMAGE":
+                                            return (
+                                                <div key={widget._id}>
+                                                   <div className="absolute-right">
+                                                        <Link to={`/user/${uid}/website/${wid}/page/${pid}/widget/${widget._id}`}>
+                                                            <i className="fas fa-cog" />
+                                                        </Link>
+                                                        <span>
+                                                            <i className="fas fa-bars" />
+                                                        </span>
+                                                    </div>
+                                                    <div>
+                                                        <img
+                                                            className="img-fluid"
+                                                            src={widget.url}
+                                                            alt=""
+                                                            width={widget.width}
+                                                        />
+                                                    </div>
+                                                </div>
+                                            )
+                                    case "YOUTUBE":
+                                                return (
+                                                    <div key={widget._id}>
+                                                        <div className="absolute-right">
+                                                            <Link to={`/user/${uid}/website/${wid}/page/${pid}/widget/${widget._id}`}>
+                                                                <i className="fas fa-cog" />
+                                                            </Link>
+                                                            <span>
+                                                                <i className="fas fa-bars" />
+                                                            </span>
+                                                        </div>
+                                                        <div className="embed-responsive embed-responsive-16by9" style={{width: widget.width}}>
+                                                            <iframe
+                                                                src={widget.url}
+                                                                title={widget._id}
+                                                                frameBorder="0"
+                                                                allow="autoplay; encrypted-media"
+                                                                allowFullScreen
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                )
+                                        default:
+                                            return <div></div>;
+                                }
+                            }
+                        )
+                    }
                 </div>
+
+                <footer className="navbar navbar-light fixed-bottom bg-light">
+                    <div className="full-width">
+                        <Link
+                            className="color-black float-right"
+                            to={`/user/${uid}`}
+                        >
+                            <i className="fas fa-user" />
+                        </Link>
+                    </div>
+                </footer>
             </div>
         );
     }
