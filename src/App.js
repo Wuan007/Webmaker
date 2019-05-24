@@ -4,7 +4,7 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import Login from "./components/user/Login";
 import Register from "./components/user/Register";
 import Profile from "./components/user/Profile";
-import Websitelist from "./components/website/WebsiteList";
+import WebsiteList from "./components/website/WebsiteList";
 import WebsiteNew from "./components/website/WebsiteNew";
 import WebsiteEdit from "./components/website/WebsiteEdit";
 
@@ -60,10 +60,10 @@ userNameInUse = (username) => {
     return false;
     }
 
-updateUser = (newuser) => {
+updateUser = (newUser) => {
     const NewUsers = this.state.users.map((user)=>{
-         if(user._id === newuser._id) {
-            if(user.username  !==newuser.useName &&
+         if(user._id === newUser._id) {
+            if(user.username  !== newUser.useName &&
                 this. userNameInUse(newUser.username)) {
                 alert("This username is taken");
                 } else {
@@ -75,16 +75,17 @@ updateUser = (newuser) => {
     }   
 
 render(){   
-return (
-   
-    <Switch>
-        <Route exact path="/" component={login} />
-        <Route exact path= "login" component={Login} />
-        <Route exact path= "register" component={Register} />
-        <Route exact path= "user/uid/" component={Profile} />
-        <Route exact path= "/user/:uid/website/list"component={WebsiteList} />
-        <Route exact path="/user/:uid/website/new" component={WebsiteNew} />
-    </Switch>
+    return (
+        <Router>
+            <Switch>
+                <Route exact path="/" component={Login} />
+                <Route exact path= "login" component={Login} />
+                <Route exact path= "register" component={Register} />
+                <Route exact path= "user/uid/" component={Profile} />
+                <Route exact path= "/user/:uid/website/list"component={WebsiteList} />
+                <Route exact path="/user/:uid/website/new" component={WebsiteNew} />
+            </Switch>
+        </Router>
         )
     }
 }

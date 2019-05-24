@@ -33,6 +33,8 @@ app.set('port', port);
 
 // Create HTTP server
 const server = http.createServer(app);
+// connect app.js
+require(`./server/app`)
 
 // For Build: Catch all other routes and return the index file -- BUILDING
 app.get('*', function (req, res) {
